@@ -10,6 +10,9 @@
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="assets/css/main.css" />
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/shave/2.5.9/shave.min.js" integrity="sha512-so7wvmDSYsuNpVdh8PdO1oJ3XkFdDHCKnmgh9Zbpr7GKn0wy1K0fw+sLanHQoFB0O4uI40n6gYQ3n32Ss+4WAA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 	</head>
 	<body class="is-preload">
 
@@ -58,8 +61,7 @@
 							<img src="images/banner.png" alt="" />
 						</div>
 						<div class="content">
-                            <h1><i id="title_date"></i><br />
-							tempus adipiscing</h1>
+                            <h1 id="banner_title"></h1>
 							<ul class="actions special">
 								<li><a href="#" class="button next">Today's Homilies</a></li>
 							</ul>
@@ -70,53 +72,10 @@
 					<section class="main style1">
 						<header class="small">
 							<h2>Recent Homilies</h2>
-							<p>Below are a selection of recent homilies delivered by clergy all over the island of Ireland. Our priests often tailor their homilies to local and global current events (such as GAA matches!) as well as adapt the readings messages to modern life.</p>
+							<p>Below are a selection of recent homilies delivered by clergy all over the island of Ireland. Priests often tailor their homilies to local and global current events (such as GAA matches!) as well as adapt the message of the day's readings to modern life.</p>
 						</header>
 						<div class="inner">
-							<div class="posts">
-								<article>
-									<a href="#" class="image filtered"><img src="images/pic01.jpg" alt="" /></a>
-									<p><strong>Magna feugiat etiam</strong> ipsum dolor tempus amet, magna consectetur. Fusce eu lacus imperdiet.</p>
-									<ul class="actions special">
-										<li><a href="#" class="button small next">Details</a></li>
-									</ul>
-								</article>
-								<article>
-									<a href="#" class="image filtered"><img src="images/pic02.jpg" alt="" /></a>
-									<p><strong>Lorem ipsum dolor</strong> tempus lacus imperdiet cursus sed nisl adipiscing sed dolor.</p>
-									<ul class="actions special">
-										<li><a href="#" class="button small next">Details</a></li>
-									</ul>
-								</article>
-								<article>
-									<a href="#" class="image filtered"><img src="images/pic03.jpg" alt="" /></a>
-									<p><strong>Feugiat tempus</strong> adipiscing sed quisque mattis rhoncus proin, vel mauris dictum nullam.</p>
-									<ul class="actions special">
-										<li><a href="#" class="button small next">Details</a></li>
-									</ul>
-								</article>
-								<article>
-									<a href="#" class="image filtered"><img src="images/pic04.jpg" alt="" /></a>
-									<p><strong>Enim interdum</strong> dignissim sed orci felis, cursus vitae ipsum. Pulvinar ipsum ex fringilla lorem.</p>
-									<ul class="actions special">
-										<li><a href="#" class="button small next">Details</a></li>
-									</ul>
-								</article>
-								<article>
-									<a href="#" class="image filtered"><img src="images/pic05.jpg" alt="" /></a>
-									<p><strong>Mollis euismod</strong> maximus amet faucibus integer, tristique et lacus lobortis ligula viverra lorem.</p>
-									<ul class="actions special">
-										<li><a href="#" class="button small next">Details</a></li>
-									</ul>
-								</article>
-								<article>
-									<a href="#" class="image filtered"><img src="images/pic06.jpg" alt="" /></a>
-									<p><strong>Urna mattis</strong> tempor amet varius lectus, phasellus vel sem elit dignissim sagittis morbi adipiscing.</p>
-									<ul class="actions special">
-										<li><a href="#" class="button small next">Details</a></li>
-									</ul>
-								</article>
-							</div>
+							<div id="posts" class="posts"></div>
 						</div>
 					</section>
 
@@ -221,12 +180,70 @@
 			<script src="assets/js/breakpoints.min.js"></script>
 			<script src="assets/js/util.js"></script>
 			<script src="assets/js/main.js"></script>
+	</body>        
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsrender/1.0.4/jsrender.min.js"></script>
 
-	</body>
     <script>
         const timeElapsed = Date.now();
         const today = new Date(timeElapsed);
-        document.getElementById("title_date").innerHTML = today.toLocaleDateString("en-GB")
-    
+        
+        var bannerString = "<i>{{:title_date}}</i><br/>{{:title}}"
+        var bannerTemplate = $.templates(bannerString);
+        var banner_data = { title_date: today.toLocaleDateString("en-GB"),
+                                  title: "some title"}
+        var html = bannerTemplate.render(banner_data)
+        document.getElementById("banner_title").innerHTML = html
+        
+    </script>
+    <script>
+        function capitalize(s)
+        {
+            return s[0].toUpperCase() + s.slice(1);
+        }
+        /*
+        <article>
+            <a href="#" class="image filtered"><img src="images/pic01.jpg" alt="" /></a>
+            <p><strong>Magna feugiat etiam</strong> ipsum dolor tempus amet, magna consectetur. Fusce eu lacus imperdiet.</p>
+            <ul class="actions special">
+                <li><a href="#" class="button small next">Details</a></li>
+            </ul>
+        </article>
+        */ 
+        var articleString = `
+            <article>
+                <a href="#" class="image filtered"><img src="{{:dalle}}" alt="" /></a>
+                <p><strong>{{:churchName}} | {{:county}}</strong> <br/>
+                    <i class="article-description">
+                        {{:homily}}
+                    </i>
+                </p>
+                <ul class="actions special">
+                    <li><a href="/homily-detail.html?id={{:id}}" class="button small next">Details</a></li>
+                </ul>
+            </article>
+        `
+        
+        fetch('./all_homilies.json')
+            .then((response) => response.json())
+            .then((homilies) => {
+                recent_six = homilies.slice(0,6)
+                console.log(recent_six)
+                items = ''
+                for(var item of recent_six){
+                    var articleTempate = $.templates(articleString);
+                    obj = {"homily": item.homily!=''?item.homily:'<br/><br/>...', "dalle": item.dalle[0],
+                           "churchName": item.churchName.toUpperCase(), "county": capitalize(item.county),
+                           "id": item.id}
+                    var html = articleTempate.render(obj)
+                    items += html
+                }
+                document.getElementById("posts").innerHTML = items
+            }).then(()=>{
+            
+                shave(".article-description", 100);
+        });
+        
+        
     </script>
 </html>

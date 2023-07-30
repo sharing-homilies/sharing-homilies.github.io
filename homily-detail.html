@@ -1,0 +1,162 @@
+<!DOCTYPE HTML>
+<!--
+	Vortex by Pixelarity
+	pixelarity.com | hello@pixelarity.com
+	License: pixelarity.com/license
+-->
+<html>
+	<head>
+		<title>Untitled</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+        <style>
+            .image-caption { 
+                font-size: medium;
+                line-height: normal;
+                display: block;
+                text-align: center;
+                padding-top: 8px;
+            }
+            
+            .image-in-text {
+                max-width: 25% !important;
+                min-width: 25% !important;
+            }
+        </style>
+	</head>
+	<body class="is-preload">
+
+		<!-- Header -->
+			<header id="header">
+
+				<!-- Logo -->
+					<div class="logo">
+						<a href="index.html"><strong>Sharing Homilies</strong></a>
+					</div>
+
+				<!-- Nav -->
+					<nav id="nav">
+						<ul>
+							<li><a href="index.html">Home</a></li>
+							<!--<li>
+								<a href="#" class="icon solid fa-angle-down">Dropdown</a>
+								<ul>
+									<li><a href="#">Option One</a></li>
+									<li><a href="#">Option Two</a></li>
+									<li><a href="#">Option Three</a></li>
+									<li>
+										<a href="#">Submenu</a>
+										<ul>
+											<li><a href="#">Option One</a></li>
+											<li><a href="#">Option Two</a></li>
+											<li><a href="#">Option Three</a></li>
+											<li><a href="#">Option Four</a></li>
+										</ul>
+									</li>
+								</ul>
+							</li>
+							<li><a href="generic.html">Generic</a></li>
+							<li><a href="elements.html">Elements</a></li>-->
+						</ul>
+					</nav>
+
+			</header>
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Section -->
+					<section class="main style1">
+                        
+						<header class="small">
+                            <h1 id="title"></h1>
+							<p id="description"></p>
+						</header>
+						<div class="inner">
+							<div class="row gtr-200">
+								<div class="col-12 col-12-medium">
+                                    
+                                        <header>
+											<h4>Priest's Homily</h4>
+											<p>This was transcribed from an audio file and may contain errors.</p>
+										</header>
+										<p id='homily'></p>
+
+										<h4>Homily Insights</h4>
+										<p><span class="image left image-in-text"><img id="firstImg" src="images/pic01.jpg" alt="" /><i class="image-caption" id="firstCaption"></i></span>
+                                            <strong>Main points</strong><br/>
+                                            <l id="points"></l>
+                                        </p>
+										<p><span class="image right image-in-text"><img id="secondImg" src="images/pic02.jpg" alt="" / id="secondCaption"><i class="image-caption" id="secondCaption"></i></span>
+                                            <strong>Personal Connection</strong><br/>
+                                            <l id="personal"></l>
+                                        </p>
+                                        <p><span class="image left image-in-text"><img id="thirdImg" src="images/pic01.jpg" alt="" /><i class="image-caption" id="thirdCaption"></i></span>
+                                            <strong>Put into Practice</strong><br/>
+                                            <l id="actions"></l>
+                                        </p>
+
+                                        <br />
+
+									<!-- Box -->
+										<div class="box">
+											<p id="verses"></p>
+										</div>
+
+								</div>
+							</div>
+
+						</div>
+					</section>
+
+			</div>
+
+		<!-- Footer -->
+			<footer id="footer">
+				Copyright &copy; Sharing Homilies. All rights reserved.
+			</footer>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.dropotron.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+	</body>
+    <script>
+        
+        function capitalize(s)
+        {
+            return s[0].toUpperCase() + s.slice(1);
+        }
+        
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        const id = urlParams.get('id')
+        
+        fetch('./all_homilies.json')
+            .then((response) => response.json())
+            .then((homilies) => {
+                var selectedHomily = homilies.find(homily => homily.id === id);
+                console.log(selectedHomily)
+                document.getElementById("title").innerHTML = selectedHomily.churchName +
+                    ', '+capitalize(selectedHomily.county)
+                document.getElementById("description").innerHTML = selectedHomily.title
+                document.getElementById("firstImg").src = selectedHomily.dalle[0];
+                document.getElementById("firstCaption").innerHTML = JSON.parse(selectedHomily.prompts)[0];
+                document.getElementById("secondImg").src = selectedHomily.dalle[1];
+                document.getElementById("secondCaption").innerHTML = JSON.parse(selectedHomily.prompts)[1];
+                document.getElementById("thirdImg").src = selectedHomily.dalle[2];
+                document.getElementById("thirdCaption").innerHTML = JSON.parse(selectedHomily.prompts)[2];
+
+                document.getElementById("points").innerHTML = selectedHomily.points.split(/\s(?=\d+\.)/).join('<br/>')
+                document.getElementById("personal").innerHTML = selectedHomily.personal.split(/\s(?=\d+\.)/).join('<br/>')
+                document.getElementById("actions").innerHTML = selectedHomily.actions.split(/\s(?=\d+\.)/).join('<br/>')
+                document.getElementById("verses").innerHTML = selectedHomily.verses
+                document.getElementById("homily").innerHTML = selectedHomily.homily
+            });
+    </script>
+</html>
