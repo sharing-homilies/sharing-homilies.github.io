@@ -24,6 +24,11 @@
                 min-width: 25% !important;
             }
         </style>
+        <link rel="stylesheet" type="text/css" href="./try-js-map/map-style.css"/>
+        <script src="./try-js-map/jquery.min.js"></script>
+        <script src="./try-js-map/map-config.js"></script>
+        <script src="./try-js-map/map-interact.js"></script>
+        <script src="./try-js-map/pins-config.js"></script>
 	</head>
 	<body class="is-preload">
 
@@ -136,6 +141,35 @@
         const queryString = window.location.search;
         const urlParams = new URLSearchParams(queryString);
         const id = urlParams.get('id')
+        
+        fetch('https://wfozt50er4.execute-api.eu-west-1.amazonaws.com/production/data')
+            .then((response) => response.json())
+            .then((homilies) => {
+                
+            
+            
+                $.getJSON(homilies['url'], function(data) {
+                    recent_six = data.slice(0,6)
+                    var selectedHomily = recent_six.find(homily => homily.id === id);
+                    console.log(selectedHomily)
+                    document.getElementById("title").innerHTML = selectedHomily.churchName +
+                        ', '+capitalize(selectedHomily.county)
+                    document.getElementById("description").innerHTML = selectedHomily.title
+                    document.getElementById("firstImg").src = selectedHomily.dalle[0];
+                    document.getElementById("firstCaption").innerHTML = JSON.parse(selectedHomily.prompts)[0];
+                    document.getElementById("secondImg").src = selectedHomily.dalle[1];
+                    document.getElementById("secondCaption").innerHTML = JSON.parse(selectedHomily.prompts)[1];
+                    document.getElementById("thirdImg").src = selectedHomily.dalle[2];
+                    document.getElementById("thirdCaption").innerHTML = JSON.parse(selectedHomily.prompts)[2];
+
+                    document.getElementById("points").innerHTML = selectedHomily.points.split(/\s(?=\d+\.)/).join('<br/>')
+                    document.getElementById("personal").innerHTML = selectedHomily.personal.split(/\s(?=\d+\.)/).join('<br/>')
+                    document.getElementById("actions").innerHTML = selectedHomily.actions.split(/\s(?=\d+\.)/).join('<br/>')
+                    document.getElementById("verses").innerHTML = selectedHomily.verses
+                    document.getElementById("homily").innerHTML = selectedHomily.homily
+                })
+                
+            })
         
         fetch('./all_homilies.json')
             .then((response) => response.json())

@@ -1,0 +1,81 @@
+﻿#mapwrapper {
+  font-family: Trebuchet MS, Helvetica, Arial, sans-serif;
+  max-width: 1920px;
+  margin: 0 auto;
+  padding: 0 0;
+  background-color: transparent;
+  min-width: 220px;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none; 
+}
+#mapbase svg {
+  max-height: 100%;
+  width: 100%;
+  margin: 0;
+  -webkit-filter: drop-shadow(5px 5px 10px #746e4d)
+}
+#iejstip {
+  font: 14px/16px Trebuchet MS, Helvetica, Arial, sans-serif;
+  display: none;
+  max-width: 40%;
+  padding: 5px;
+  color: #404040;
+  z-index: 1000;
+  float: left;
+  position: absolute;
+  background: rgba(265, 265, 265, 1);
+  word-break: keep-all;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+}
+#iejstip p {
+  margin: 0!important;
+  color: #404040!important;
+}
+#iejstip img {
+  float: left;
+  padding: 3px;
+  max-width: 100%;
+}
+@media screen and (max-width: 320px){
+  #mapbase svg {
+    height:100%;
+  }
+}
+@media screen and (max-width: 400px) and (min-width: 321px) {
+  #mapbase svg {
+    height:100%;
+  }
+}
+@media screen and (max-width: 480px) and (min-width: 401px) {
+  #mapbase svg {
+    height:100%;
+  }
+}
+@media screen and (max-width: 568px) and (min-width: 481px) {
+  #mapbase svg {
+    height:100%;
+  }
+}
+@media screen and (max-width: 685px) and (min-width: 569px) {
+  #mapbase svg {
+    height:100%;
+  }
+}
+@media screen and (max-width: 767px) and (min-width: 686px) {
+  #mapbase svg {
+    height:100%;
+  }
+}
+@media screen and (min-width: 768px) {
+  #mapbase svg {
+    height:500px;
+  }
+}
+/* THIS IS TO HIDE AN AREA IF NEEDED
+#iejs2, #iejsvn2 {
+  display: none;
+}*/
